@@ -1,0 +1,88 @@
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from matplotlib import pyplot
+# set input directory
+input_dir = 'input'
+# set dataset file name
+input_data_file = 'data.xlsx'
+# display list of files in input directory
+os.listdir('input')
+# to get the input data path
+data_path = os.path.join(os.curdir,input_dir,input_data_file)
+data_path
+# to read data from excel file
+raw_data = pd.read_excel(data_path)
+from sklearn.model_selection import train_test_split
+X = raw_data.drop('horror', axis=1)
+y = raw_data['horror']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+X_train.to_excel('Traning_Testing/X_train.xlsx')
+X_test.to_excel('Traning_Testing/X_test.xlsx')
+y_train.to_excel('Traning_Testing/y_train.xlsx')
+y_test.to_excel('Traning_Testing/y_test.xlsx')
+from sklearn.naive_bayes import GaussianNB
+nb_model = GaussianNB()
+nb_model = nb_model.fit(X_train, y_train)
+predictionNB = nb_model.predict(X_test)
+print(predictionNB)
+from sklearn.metrics import classification_report, confusion_matrix, 
+from sklearn.metrics import precision_recall_fscore_support
+print(classification_report(y_test,predictionNB))
+crNB = precision_recall_fscore_support(y_test,predictionNB,average='weighted')
+precisionNB = crNB[0]
+recallNB = crNB[1]
+f1scoreNB = crNB[2]
+precisionNB
+print(confusion_matrix(y_test,predictionNB))
+from sklearn.svm import SVC
+model_svm = SVC()
+model_svm = model_svm.fit(X_train, y_train)
+predictionSVM = model_svm.predict(X_test)
+print(predictionSVM)
+from sklearn.metrics import classification_report, confusion_matrix
+classificationReportSVM = classification_report(y_test, predictionSVM)
+print(classificationReportSVM)
+crSVM = precision_recall_fscore_support(y_test,predictionSVM,average='weighted')
+precisionSVM = crSVM[0]
+recallSVM = crSVM[1]
+f1scoreSVM = crSVM[2]
+precisionSVM
+confusionMatrixSVM = confusion_matrix(y_test, predictionSVM)
+print(confusionMatrixSVM)
+from sklearn.ensemble import AdaBoostClassifier
+ada = AdaBoostClassifier()
+ada = ada.fit(X_train, y_train)
+predictionADA = ada.predict(X_test)
+print(predictionADA)
+from sklearn.metrics import classification_report, confusion_matrix
+classificationReportADA = classification_report(y_test, predictionADA)
+print(classificationReportADA)
+crADA = precision_recall_fscore_support(y_test,predictionADA,average='weighted')
+precisionADA = crADA[0]
+recallADA = crADA[1]
+f1scoreADA = crADA[2]
+precisionADA
+confusionMatrixADA = confusion_matrix(y_test, predictionADA)
+print(confusionMatrixADA)
+from sklearn.tree import DecisionTreeClassifier
+dtree = DecisionTreeClassifier()
+dtree = dtree.fit(X_train, y_train)
+predictionDT = dtree.predict(X_test)
+print(predictionDT)
+from sklearn.metrics import classification_report,confusion_matrix
+classificationReportDT = classification_report(y_test,predictionDT)
+print(classificationReportDT)
+crDT = precision_recall_fscore_support(y_test,predictionDT,average='weighted')
+precisionDT = crDT[0]
+recallDT = crDT[1]
+f1scoreDT = crDT[2]
+precisionDT
+confusionMatrixDT = confusion_matrix(y_test, predictionDT)
+print(confusionMatrixDT)
+li_x = ["", 'NB', 'ADA', 'SVM', 'DT']
+li_y = [0, precisionNB, precisionADA, precisionSVM, precisionDT]
+print(li_y)
+sns.barplot(x=li_x, y=li_y)
